@@ -1,17 +1,4 @@
-//url = 'wss://www.apex-timing.com:8072/';
-let url = 'ws://www.apex-timing.com:7822/';
-//bulgaria
-//let url = 'ws://www.apex-timing.com:8912/';
-//rkc
-//let url = 'ws://www.apex-timing.com:7822/';
-//belgium
-//let url = 'ws://www.apex-timing.com:8242/';
-//slovakia
-//let url = 'ws://www.apex-timing.com:8532/';
-//pista sens inverse
-//let url = 'ws://www.apex-timing.com:8202/';
-//Url for php request +2!
-// url = 'http://www.apex-timing.com/live-timing/pista-azzurra/liveajax.php?init=0&index=0&port=7824'
+let url = "{{ race.wss_url }}";
 
 trackUpdates();
 trackQueue();
@@ -21,16 +8,15 @@ updateRatingLapTimeFrames()
 
 function getData() {
     window.getDataTask = window.setInterval(() => {
-        window.myWebSocket = new WebSocket(url);
-        myWebSocket.onopen = function (event) {
-            let message = getInitMessage();
-            myWebSocket.send(message);
-        };
-
-        myWebSocket.onmessage = function (event) {
-            window.myWebSocket.close();
-            parseApexData(event.data);
-        }
+        fetch("{% url 'latest' race_id=race.id %} ")
+            .then((response) => {
+                return response.text();
+            })
+            .then((data) => {
+                if (!(data.trim() === '')) {
+                    parseApexData(data);
+                }
+            })
     }, 2000);
 }
 
@@ -63,10 +49,10 @@ function trackUpdates() {
 function parseApexData(data) {
     //console.log(data);
     //console.log(storage);
-    //  console.log("Received data");
+    console.log("Received data");
     let items = data.split('\n');
     if (data.includes('init|')) {
-        // console.log("Received init data");
+        console.log("Received init data");
         let grid = items.filter(item => item.includes('grid|'));
         if (grid.length === 0) {
             console.log("Wrong init data");
@@ -290,6 +276,7 @@ function howManyKartsToKeep() {
 }
 
 function recalculateRating() {
+    console.log('recalculateRating');
     for (let name in storage.teams) {
         let rating = defineTeamRating(storage.teams[name]);
         if (storage.teams[name].customRating) {

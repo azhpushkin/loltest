@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    TIMINGS 
+</head>
+<body>
+
+    <h1>All races: </h1>
+
+    {% for race in races %}
+        <h2><a href="{% url 'race' race_id=race.id %}">
+            - #{{ race.id }} {{race.name}}
+        </a></h2>
+    {% endfor %}
+
+</body>
+</html>

@@ -63,7 +63,7 @@ if __name__ == '__main__':
                 logger.info('New active race found', extra={'race': current_race.id})
             else:
                 logger.info('No active race, waiting')
-                time.sleep(3)
+                time.sleep(30)
                 continue
         
         current_race.refresh_from_db()
@@ -76,4 +76,4 @@ if __name__ == '__main__':
             logger.info('Race deactivated', extra={'race': current_race.id})
             current_race = None
 
-        time.sleep(3)
+        time.sleep(2)

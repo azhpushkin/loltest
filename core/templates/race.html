@@ -1,3 +1,5 @@
+{% load static %}
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -13,10 +15,11 @@
     <title>KARTING MANAGER 0.3 APEX</title>
 </head>
 <body>
+    {{race.id}}
 <div class="container">
     <br/>
     <button type="button" class="btn btn-primary" onclick="reset()">RESET ALL DATA</button>
-    <br/><img id="finish" style="display: none;" src="flag.jpeg" width="200"/>
+    <br/><img id="finish" style="display: none;" src="{% static 'flag.png' %}" width="200"/>
     <br/>
     <div class="accordion" id="accordionExample">
         <div class="accordion-item">
@@ -172,6 +175,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-<script src="/static/apex.js"></script>
+<script src="{% url 'js' race_id=race.id %}"></script>
 </body>
 </html>

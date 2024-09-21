@@ -72,7 +72,8 @@ def get_port(url):
 
     try:
         resp = requests.get(url + '/javascript/config.js')
-        if resp.
+        if not str(resp.status_code).startswith('2'):
+            return None, f'{resp}, {resp.content}'
         port = int(port_re.search(resp.text).group('port'))
         return port, None
     except Exception as ex:
