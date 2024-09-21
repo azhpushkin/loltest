@@ -25,6 +25,18 @@ class RaceView(TemplateView):
         return {
             'race': race
         }
+    
+
+class SettingsView(TemplateView):
+    template_name = 'settings.html'
+
+    def get_context_data(self, race_id, **kwargs):
+        race = get_object_or_404(Race, id=race_id)
+        
+        return {
+            'race': race
+        }
+
 
 class JSView(TemplateView):
     template_name = 'apex.js'
