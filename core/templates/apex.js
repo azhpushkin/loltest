@@ -8,7 +8,8 @@ updateRatingLapTimeFrames()
 
 function getData() {
     console.log('scheduled');
-    window.setTimeout(() => fetchInitialData(startFetching), 2000);
+    // window.setTimeout(() => fetchInitialData(startFetching), 2000);
+    startFetching();
     // startFetching2();
     
 }
@@ -31,26 +32,26 @@ function fetchInitialData(fn) {
     })
 }
 
-function startFetching2() {
-    // window.getDataTask = window.setInterval(() => {
-    window.getDataTask = window.setTimeout(() => {
-        fetch("{% url 'last10min' race_id=race.id %} ")
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                data.requests.forEach(element => {
-                    // console.log('Processing initial');
-                    parseApexData(element.data)
-                });
-                // console.log(data.requests[0].data);
-                // parseApexData(data.requests[0].data)
-                // if (!(data.trim() === '')) {
-                //     parseApexData(data);
-                // }
-            })
-    }, 2000);
-}
+// function startFetching2() {
+//     // window.getDataTask = window.setInterval(() => {
+//     window.getDataTask = window.setTimeout(() => {
+//         fetch("{% url 'last10min' race_id=race.id %} ")
+//             .then((response) => {
+//                 return response.json();
+//             })
+//             .then((data) => {
+//                 data.requests.forEach(element => {
+//                     // console.log('Processing initial');
+//                     parseApexData(element.data)
+//                 });
+//                 // console.log(data.requests[0].data);
+//                 // parseApexData(data.requests[0].data)
+//                 // if (!(data.trim() === '')) {
+//                 //     parseApexData(data);
+//                 // }
+//             })
+//     }, 2000);
+// }
 
 function startFetching() {
     window.getDataTask = window.setInterval(() => {
@@ -75,15 +76,14 @@ function trackQueue() {
     }, 1000);
 }
 
+function recalculateRatingTimeFramesIfNeeded() {
+    if (storage.settings.countAutomatic && storage.rating && Object.keys(storage.rating).length > 5) {
+        recalculateRatingTimeFrames()
+    }
+}
+
 function updateRatingLapTimeFrames() {
-    var recalc = () => {
-        console.log(111, storage.settings.countAutomatic);
-        if (storage.settings.countAutomatic && storage.rating && Object.keys(storage.rating).length > 5) {
-            recalculateRatingTimeFrames()
-        }
-    };
-    window.setTimeout(recalc, 10000);
-    window.queueTask = window.setInterval(recalc, 120000);
+    window.queueTask = window.setInterval(recalculateRatingTimeFramesIfNeeded, 120000);
 }
 
 function trackUpdates() {
@@ -796,9 +796,20 @@ function getFromLocalStorage(whatToGet = 'storage') {
 }
 
 function reset() {
+    clearInterval(window.getDataTask);
     localStorage.removeItem('storage');
     localStorage.removeItem('statistic');
     initStorage(window.storage.track);
+    startFetching();
+}
+
+function resetAndFetch10() {
+    clearInterval(window.getDataTask);
+    localStorage.removeItem('storage');
+    localStorage.removeItem('statistic');
+    initStorage(window.storage.track);
+    window.setTimeout(() => fetchInitialData(startFetching), 2000);
+    window.setTimeout(recalculateRatingTimeFramesIfNeeded, 5000);
 }
 
 //2g || Ingul

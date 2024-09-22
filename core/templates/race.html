@@ -34,7 +34,11 @@
             </h2>
             <div id="collapseOne" class="row accordion-collapse collapse show" aria-labelledby="headingOne"
                  data-bs-parent="#accordionExample">
+                 <br>
                  <button type="button" class="btn btn-primary" onclick="reset()">RESET ALL DATA</button>
+                 <hr>
+                 <button type="button" class="btn btn-primary" onclick="resetAndFetch10()">RESET + 10 MIN</button>
+                 <br>
                 <div class="col border">
                     <h3>Pitstop lane</h3>
                     <input class="form-check-input" onclick="setRandomPitlane(this.checked)" type="checkbox" id="random-pitlane" name="random-pitlane" value="Random">
