@@ -17,6 +17,7 @@ class RaceAdmin(admin.ModelAdmin):
 
 @admin.register(BoardRequest)
 class BoardRequestAdmin(admin.ModelAdmin):
+    list_filter = ['race_id']
     list_display = ('id', 'url', 'created_at',  'race_id', )
     list_per_page = 30
 

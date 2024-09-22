@@ -1,6 +1,14 @@
 from django.urls import path
 
-from .views import HomeView, RaceView, JSView, LatestRequest, SettingsView
+from .views import (
+    HomeView,
+    RaceView,
+    JSView,
+    LatestRequest,
+    SettingsView,
+    GetLast10Minutes,
+)
+
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
@@ -9,5 +17,6 @@ urlpatterns = [
 
     path('race/<race_id>/latest', LatestRequest.as_view(), name='latest'),
     path('race/<race_id>/settings', SettingsView.as_view(), name='settings'),
-    # path('race/<race_id>/latest', LatestRequest.as_view(), name='latest'),
+    path('race/<race_id>/10min', GetLast10Minutes.as_view(), name='last10min'),
+
 ]

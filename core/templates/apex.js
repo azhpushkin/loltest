@@ -7,6 +7,30 @@ initStorage('apex');
 updateRatingLapTimeFrames()
 
 function getData() {
+    console.log('scheduled');
+    // fetchInitialData(startFetching);
+    startFetching();
+    // window.setTimeout(startFetching, 4000);
+}
+
+function fetchInitialData(fn) {
+    fetch("{% url 'last10min' race_id=race.id %} ")
+    .then((response) => {
+        return response.json();
+    })
+    .then((data) => {
+        data.requests.forEach(element => {
+            // console.log('Processing initial');
+            parseApexData(element.data)
+        });
+        console.log(data.requests.length);
+        if (fn !== undefined) {
+            fn()
+        }
+    })
+}
+
+function startFetching() {
     window.getDataTask = window.setInterval(() => {
         fetch("{% url 'latest' race_id=race.id %} ")
             .then((response) => {

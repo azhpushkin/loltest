@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from .models import *
 from django.views.generic import TemplateView, View
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 
 
@@ -57,3 +57,13 @@ class LatestRequest(View):
         else:
             return HttpResponse(br.response_body)
 
+
+class GetLast10Minutes(View):
+    def get(self, *args, **kwargs):
+        race_id = kwargs['race_id']
+        brs = BoardRequest.objects.order_by('created_at')
+        data = [{
+            'data': br.response_body
+        } for br in brs]
+        print(type(brs[0].response_body))
+        return JsonResponse({'requests': data})
