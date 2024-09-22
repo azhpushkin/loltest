@@ -8,12 +8,13 @@ updateRatingLapTimeFrames()
 
 function getData() {
     console.log('scheduled');
-    // window.setTimeout(() => fetchInitialData(startFetching), 2000);
-    startFetching();
+    window.setTimeout(() => fetchInitialData(startFetching), 2000);
+    // startFetching2();
     
 }
 
 function fetchInitialData(fn) {
+    console.log(fn!==undefined, fn);
     fetch("{% url 'last10min' race_id=race.id %} ")
     .then((response) => {
         return response.json();
@@ -31,14 +32,19 @@ function fetchInitialData(fn) {
 }
 
 function startFetching2() {
-    window.getDataTask = window.setInterval(() => {
+    // window.getDataTask = window.setInterval(() => {
+    window.getDataTask = window.setTimeout(() => {
         fetch("{% url 'last10min' race_id=race.id %} ")
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
+                data.requests.forEach(element => {
+                    // console.log('Processing initial');
+                    parseApexData(element.data)
+                });
                 // console.log(data.requests[0].data);
-                parseApexData(data.requests[0].data)
+                // parseApexData(data.requests[0].data)
                 // if (!(data.trim() === '')) {
                 //     parseApexData(data);
                 // }
@@ -70,11 +76,14 @@ function trackQueue() {
 }
 
 function updateRatingLapTimeFrames() {
-    window.queueTask = window.setInterval(() => {
+    var recalc = () => {
+        console.log(111, storage.settings.countAutomatic);
         if (storage.settings.countAutomatic && storage.rating && Object.keys(storage.rating).length > 5) {
             recalculateRatingTimeFrames()
         }
-    }, 120000);
+    };
+    window.setTimeout(recalc, 10000);
+    window.queueTask = window.setInterval(recalc, 120000);
 }
 
 function trackUpdates() {
@@ -805,8 +814,9 @@ function initStorage(track) {
             classes: {rocket: 52800, good: 53300, soso: 53800, sucks: 54200},
             settings: {
                 teamsSort: 'default',
-                countAutomatic: false,
-                isRandomPitlane: false,
+                countAutomatic: true,
+                // changed from default
+                isRandomPitlane: true,
                 rowsSum: 9,
                 rows: [{count: 3, color: '#FFFFFF'}, {count: 3, color: '#FFFFFF'}, {
                     count: 3,
@@ -841,7 +851,9 @@ function setColorInRow(index, value) {
 }
 
 function recalculateRatingTimeFrames() {
+    
     let ratings = Object.values(storage.rating);
+    console.log('recalculateRatingTimeFrames', ratings);
     ratings = ratings.filter(team => team.rating !== 'unknown')
     ratings = ratings.filter(team => team.avg && team.avg > 0)
     if(ratings.length < 10) {
