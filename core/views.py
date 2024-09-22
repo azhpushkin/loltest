@@ -45,7 +45,7 @@ class JSView(TemplateView):
         race = get_object_or_404(Race, id=race_id)
         
         return {
-            'race': race
+            'race': race,
         }
     
 class LatestRequest(View):
