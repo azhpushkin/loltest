@@ -8,9 +8,9 @@ updateRatingLapTimeFrames()
 
 function getData() {
     console.log('scheduled');
-    // fetchInitialData(startFetching);
+    // window.setTimeout(() => fetchInitialData(startFetching), 2000);
     startFetching();
-    // window.setTimeout(startFetching, 4000);
+    
 }
 
 function fetchInitialData(fn) {
@@ -23,11 +23,27 @@ function fetchInitialData(fn) {
             // console.log('Processing initial');
             parseApexData(element.data)
         });
-        console.log(data.requests.length);
+        // console.log(data.requests.length);
         if (fn !== undefined) {
             fn()
         }
     })
+}
+
+function startFetching2() {
+    window.getDataTask = window.setInterval(() => {
+        fetch("{% url 'last10min' race_id=race.id %} ")
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                // console.log(data.requests[0].data);
+                parseApexData(data.requests[0].data)
+                // if (!(data.trim() === '')) {
+                //     parseApexData(data);
+                // }
+            })
+    }, 2000);
 }
 
 function startFetching() {
@@ -38,6 +54,7 @@ function startFetching() {
             })
             .then((data) => {
                 if (!(data.trim() === '')) {
+                    // console.log(data);
                     parseApexData(data);
                 }
             })
@@ -73,7 +90,7 @@ function trackUpdates() {
 function parseApexData(data) {
     //console.log(data);
     //console.log(storage);
-    console.log("Received data");
+    // console.log("Received data");
     let items = data.split('\n');
     if (data.includes('init|')) {
         console.log("Received init data");

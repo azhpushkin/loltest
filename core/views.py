@@ -1,3 +1,5 @@
+from datetime import timedelta
+from django.utils import timezone
 from django.http import HttpResponse
 from .models import *
 from django.views.generic import TemplateView, View
@@ -61,9 +63,12 @@ class LatestRequest(View):
 class GetLast10Minutes(View):
     def get(self, *args, **kwargs):
         race_id = kwargs['race_id']
-        brs = BoardRequest.objects.order_by('created_at')
+        brs = BoardRequest.objects.filter(
+            race_id=race_id,
+            created_at__gt=timezone.now() - timedelta(minutes=10)
+        ).order_by('created_at')
         data = [{
             'data': br.response_body
         } for br in brs]
-        print(type(brs[0].response_body))
+        print(len(data))
         return JsonResponse({'requests': data})
